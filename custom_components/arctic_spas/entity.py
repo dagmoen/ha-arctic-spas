@@ -1,4 +1,4 @@
-"""Shared base entity for Arctic Spa."""
+"""Shared base entity for Arctic Spas."""
 from __future__ import annotations
 
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -32,7 +32,7 @@ class SpaEntity(CoordinatorEntity[SpaCoordinator]):
         return DeviceInfo(
             identifiers={(DOMAIN, self.coordinator.entry.entry_id)},
             manufacturer="Arctic Spas",
-            name="Arctic Spa",
+            name="Arctic Spas",
             model=str(serial) if serial else None,
             sw_version=sw or None,
         )

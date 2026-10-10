@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Arctic Spa local probe (Customer Portal WebSocket, YOC 3.x firmware).
+"""Arctic Spas local probe (Customer Portal WebSocket, YOC 3.x firmware).
 
 Connects to ws://<host>:8765, sends {"query": 0}, and prints the full snapshot
 the spa returns (live / sett / const / error / status). Read-only.

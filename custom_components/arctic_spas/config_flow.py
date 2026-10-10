@@ -1,4 +1,4 @@
-"""Config flow for Arctic Spa (Local): zeroconf discovery + manual entry."""
+"""Config flow for Arctic Spas (Local): zeroconf discovery + manual entry."""
 from __future__ import annotations
 
 import socket
@@ -52,7 +52,7 @@ class ArcticSpaConfigFlow(ConfigFlow, domain=DOMAIN):
                 await self.async_set_unique_id(host)
                 self._abort_if_unique_id_configured()
                 return self.async_create_entry(
-                    title=f"Arctic Spa ({host})",
+                    title=f"Arctic Spas ({host})",
                     data={CONF_HOST: host, CONF_PORT: port},
                 )
 
@@ -72,7 +72,7 @@ class ArcticSpaConfigFlow(ConfigFlow, domain=DOMAIN):
         props = discovery_info.properties or {}
         spa_guid = props.get("spa_guid")
         if not spa_guid:
-            # Some other MQTT service, not an Arctic Spa.
+            # Some other MQTT service, not an Arctic Spas.
             return self.async_abort(reason="not_arctic_spa")
 
         host = props.get("device_ip") or discovery_info.host
@@ -83,7 +83,7 @@ class ArcticSpaConfigFlow(ConfigFlow, domain=DOMAIN):
         await self.async_set_unique_id(spa_guid)
         self._abort_if_unique_id_configured(updates={CONF_HOST: host})
 
-        self.context["title_placeholders"] = {"name": f"Arctic Spa ({host})"}
+        self.context["title_placeholders"] = {"name": f"Arctic Spas ({host})"}
         return await self.async_step_confirm()
 
     async def async_step_confirm(
@@ -91,7 +91,7 @@ class ArcticSpaConfigFlow(ConfigFlow, domain=DOMAIN):
     ) -> ConfigFlowResult:
         if user_input is not None:
             return self.async_create_entry(
-                title=f"Arctic Spa ({self._host})",
+                title=f"Arctic Spas ({self._host})",
                 data={
                     CONF_HOST: self._host,
                     CONF_PORT: self._port,

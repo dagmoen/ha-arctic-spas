@@ -1,4 +1,4 @@
-"""Constants and the reverse-engineered data model for Arctic Spa (local).
+"""Constants and the reverse-engineered data model for Arctic Spas (local).
 
 Local interface (YOC 3.x firmware), verified live plus cross-checked against the
 Android app `com.crazedcoders.globalspa` and the community integration
@@ -13,7 +13,7 @@ jkol/ha-arctic-spas:
 """
 from __future__ import annotations
 
-DOMAIN = "arctic_spa"
+DOMAIN = "arctic_spas"
 
 DEFAULT_PORT = 8765
 QUERY = {"query": 0}

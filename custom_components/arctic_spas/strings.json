@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Arctic Spa (Local)",
+        "title": "Arctic Spas (Local)",
         "description": "Enter the spa's IP address. The spa must be on the same network and running firmware that supports local (Direct Connect) access.",
         "data": {
           "host": "IP address",
@@ -10,7 +10,7 @@
         }
       },
       "confirm": {
-        "title": "Arctic Spa found",
+        "title": "Arctic Spas found",
         "description": "A spa was discovered at {host}. Add it to Home Assistant?"
       }
     },
@@ -19,7 +19,7 @@
     },
     "abort": {
       "already_configured": "This spa is already configured.",
-      "not_arctic_spa": "This MQTT service is not an Arctic Spa."
+      "not_arctic_spa": "This MQTT service is not an Arctic Spas."
     }
   }
 }

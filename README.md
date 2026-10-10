@@ -1,4 +1,4 @@
-# Arctic Spa (Local) — Home Assistant integration
+# Arctic Spas (Local) — Home Assistant integration
 
 Control an Arctic Spas hot tub **locally** from Home Assistant — no cloud
 account, no internet dependency. It talks to the spa's on-board "Customer
@@ -18,9 +18,9 @@ a `live` section, you're good.
 ## Installation (HACS)
 
 1. HACS → ⋮ → **Custom repositories** → add
-   `https://github.com/dagmoen/ha-arctic-spa`, category **Integration**.
-2. Install **Arctic Spa (Local)**, restart Home Assistant.
-3. Settings → Devices & Services → **Add Integration** → *Arctic Spa (Local)* →
+   `https://github.com/dagmoen/ha-arctic-spas`, category **Integration**.
+2. Install **Arctic Spas (Local)**, restart Home Assistant.
+3. Settings → Devices & Services → **Add Integration** → *Arctic Spas (Local)* →
    confirm the discovered spa, or enter its IP.
 
 ## Entities

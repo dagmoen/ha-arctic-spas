@@ -1,4 +1,4 @@
-"""Diagnostics support for Arctic Spa (Local)."""
+"""Diagnostics support for Arctic Spas (Local)."""
 from __future__ import annotations
 
 from typing import Any
