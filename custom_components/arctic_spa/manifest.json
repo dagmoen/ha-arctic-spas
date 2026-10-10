@@ -1,0 +1,19 @@
+{
+  "domain": "arctic_spa",
+  "name": "Arctic Spa (Local)",
+  "version": "0.4.1",
+  "documentation": "https://github.com/dagmoen/ha-arctic-spa",
+  "issue_tracker": "https://github.com/dagmoen/ha-arctic-spa/issues",
+  "codeowners": ["@dagmoen"],
+  "config_flow": true,
+  "iot_class": "local_polling",
+  "requirements": [],
+  "zeroconf": [
+    {
+      "type": "_mqtt._tcp.local.",
+      "properties": {
+        "spa_guid": "*"
+      }
+    }
+  ]
+}

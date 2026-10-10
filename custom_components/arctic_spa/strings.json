@@ -1,0 +1,25 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Arctic Spa (Local)",
+        "description": "Enter the spa's IP address. The spa must be on the same network and running firmware that supports local (Direct Connect) access.",
+        "data": {
+          "host": "IP address",
+          "port": "Port"
+        }
+      },
+      "confirm": {
+        "title": "Arctic Spa found",
+        "description": "A spa was discovered at {host}. Add it to Home Assistant?"
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach the spa's MQTT broker on that address and port."
+    },
+    "abort": {
+      "already_configured": "This spa is already configured.",
+      "not_arctic_spa": "This MQTT service is not an Arctic Spa."
+    }
+  }
+}
