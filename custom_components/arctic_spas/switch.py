@@ -8,18 +8,13 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, SWITCHES
+from .const import DOMAIN, SWITCHES, equipment_installed
 from .coordinator import SpaCoordinator
 from .entity import SpaEntity
 
 
 def _installed(coordinator: SpaCoordinator, spec: dict) -> bool:
-    cfg = spec.get("cfg")
-    if cfg is not None:
-        flag = coordinator.get("sett", cfg)
-        if flag is not None:
-            return bool(flag)
-    return coordinator.get("live", spec["field"]) is not None
+    return equipment_installed(coordinator.get, spec.get("cfg"), "live", spec["field"])
 
 
 async def async_setup_entry(

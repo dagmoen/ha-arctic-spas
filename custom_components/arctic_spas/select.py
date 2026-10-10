@@ -16,7 +16,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, PUMP1_SPEEDS, pump1_speed
+from .const import DOMAIN, PUMP1_SPEEDS, equipment_installed, pump1_speed
 from .coordinator import SpaCoordinator
 from .entity import SpaEntity
 
@@ -32,10 +32,7 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     coordinator: SpaCoordinator = hass.data[DOMAIN][entry.entry_id]
-    installed = coordinator.get("sett", "cfgP1")
-    if installed is None:
-        installed = coordinator.get("live", "P1") is not None
-    if installed:
+    if equipment_installed(coordinator.get, "cfgP1", "live", "P1"):
         async_add_entities([Pump1Select(coordinator)])
 
 

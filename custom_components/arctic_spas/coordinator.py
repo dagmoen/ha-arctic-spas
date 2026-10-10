@@ -32,6 +32,7 @@ _LOGGER = logging.getLogger(__name__)
 _RECONNECT_BACKOFF = (2, 5, 10, 30, 60)
 _WS_HEARTBEAT = 25.0       # aiohttp ping to detect a dead TCP link
 _QUERY_REPLY_TIMEOUT = 5.0  # how long to wait for a `live` after a query
+_SETT_REPLY_TIMEOUT = 3.0   # extra wait for `sett` (config/capability flags)
 
 
 class SpaWebSocketClient:
@@ -48,6 +49,7 @@ class SpaWebSocketClient:
         self._running = False
         self._connected = asyncio.Event()
         self._live_event = asyncio.Event()
+        self._sett_event = asyncio.Event()
 
     async def async_start(self) -> None:
         self._running = True
@@ -110,6 +112,8 @@ class SpaWebSocketClient:
             self.sections.setdefault(section, {}).update(data)
             if section == "live":
                 self._live_event.set()
+            elif section == "sett":
+                self._sett_event.set()
 
     async def async_query(self) -> dict[str, dict[str, Any]]:
         """Request a fresh snapshot and return the merged state."""
@@ -118,6 +122,7 @@ class SpaWebSocketClient:
         except asyncio.TimeoutError as err:
             raise UpdateFailed("spa not reachable") from err
         self._live_event.clear()
+        self._sett_event.clear()
         assert self._ws is not None
         await self._ws.send_str(json.dumps(QUERY))
         try:
@@ -125,6 +130,13 @@ class SpaWebSocketClient:
         except asyncio.TimeoutError:
             # Keep last-known data; a later query or push may catch up.
             _LOGGER.debug("No live reply within %ss", _QUERY_REPLY_TIMEOUT)
+        # Also wait briefly for `sett` so capability/config flags are present
+        # before entities are created (sett arrives shortly after live).
+        if not self._sett_event.is_set():
+            try:
+                await asyncio.wait_for(self._sett_event.wait(), timeout=_SETT_REPLY_TIMEOUT)
+            except asyncio.TimeoutError:
+                _LOGGER.debug("No sett within %ss", _SETT_REPLY_TIMEOUT)
         return {k: dict(v) for k, v in self.sections.items()}
 
     async def async_send_command(self, payload: dict[str, Any]) -> None:

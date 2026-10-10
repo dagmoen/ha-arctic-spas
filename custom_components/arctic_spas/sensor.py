@@ -7,11 +7,17 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, ENUM_SENSORS, SENSORS, decode_errors
+from .const import DOMAIN, ENUM_SENSORS, SENSORS, decode_errors, equipment_installed
 from .coordinator import SpaCoordinator
 from .entity import SpaEntity
 
 _CATEGORY = {"diagnostic": EntityCategory.DIAGNOSTIC}
+
+
+def _create(coordinator: SpaCoordinator, spec: dict) -> bool:
+    return equipment_installed(
+        coordinator.get, spec.get("cfg"), spec["section"], spec["field"]
+    )
 
 
 async def async_setup_entry(
@@ -20,10 +26,10 @@ async def async_setup_entry(
     coordinator: SpaCoordinator = hass.data[DOMAIN][entry.entry_id]
     entities: list[SensorEntity] = []
     for spec in SENSORS:
-        if coordinator.get(spec["section"], spec["field"]) is not None:
+        if _create(coordinator, spec):
             entities.append(SpaSensor(coordinator, spec))
     for spec in ENUM_SENSORS:
-        if coordinator.get(spec["section"], spec["field"]) is not None:
+        if _create(coordinator, spec):
             entities.append(SpaEnumSensor(coordinator, spec))
     if "error" in (coordinator.data or {}):
         entities.append(SpaErrorSensor(coordinator))

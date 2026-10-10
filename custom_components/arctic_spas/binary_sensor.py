@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import BINARY_SENSORS, DOMAIN, decode_errors
+from .const import BINARY_SENSORS, DOMAIN, decode_errors, equipment_installed
 from .coordinator import SpaCoordinator
 from .entity import SpaEntity
 
@@ -33,7 +33,7 @@ def _present(coordinator: SpaCoordinator, spec: dict) -> bool:
         return coordinator.get("live", "Filter") is not None
     if field == "__error__":
         return "error" in (coordinator.data or {})
-    return coordinator.get(spec["section"], field) is not None
+    return equipment_installed(coordinator.get, spec.get("cfg"), spec["section"], field)
 
 
 async def async_setup_entry(

@@ -85,6 +85,21 @@ def decode_errors(error_section: dict | None) -> list[str]:
     return [label for bit, label in ERROR_BITS.items() if code & (1 << bit)]
 
 
+def equipment_installed(get, cfg, section=None, field=None) -> bool:
+    """Decide whether to create an entity.
+
+    If the spec names a `cfg*` install flag, require it to be truthy — a missing
+    or False flag means the hardware is not fitted, so don't create the entity
+    (strict, to avoid exposing equipment the spa doesn't have). With no cfg flag,
+    fall back to whether the field is being reported at all.
+    """
+    if cfg is not None:
+        return bool(get("sett", cfg))
+    if section and field:
+        return get(section, field) is not None
+    return True
+
+
 # ---------------------------------------------------------------------------
 # Switch / toggle equipment. See coordinator for how state/commands are routed.
 #   key, name, field (in `live`), command (keys to set), cfg (sett install flag,
@@ -130,18 +145,18 @@ def pump1_speed(value) -> str | None:
 SENSORS = [
     {"key": "water_temp", "name": "Water Temperature", "section": "live", "field": "STemp",
      "device_class": "temperature", "unit": "°F", "state_class": "measurement", "icon": "mdi:thermometer"},
-    {"key": "spaboy_ph", "name": "SpaBoy pH", "section": "live", "field": "sbpH",
+    {"key": "spaboy_ph", "name": "SpaBoy pH", "section": "live", "field": "sbpH", "cfg": "cfgSB",
      "divisor": 100, "state_class": "measurement", "icon": "mdi:ph"},
-    {"key": "spaboy_orp", "name": "SpaBoy ORP", "section": "live", "field": "sbORP",
+    {"key": "spaboy_orp", "name": "SpaBoy ORP", "section": "live", "field": "sbORP", "cfg": "cfgSB",
      "unit": "mV", "state_class": "measurement", "icon": "mdi:water-check"},
     {"key": "power", "name": "Power", "section": "live", "field": "Current",
      "multiplier": POWER_CALIBRATION, "round": 0, "device_class": "power", "unit": "W",
      "state_class": "measurement", "icon": "mdi:flash"},
-    {"key": "spaboy_electrode_wear", "name": "SpaBoy Electrode Wear", "section": "live", "field": "sbWear",
+    {"key": "spaboy_electrode_wear", "name": "SpaBoy Electrode Wear", "section": "live", "field": "sbWear", "cfg": "cfgSB",
      "unit": "%", "state_class": "measurement", "icon": "mdi:percent", "category": "diagnostic"},
-    {"key": "spaboy_cell_temp", "name": "SpaBoy Cell Temperature", "section": "live", "field": "sbTemp",
+    {"key": "spaboy_cell_temp", "name": "SpaBoy Cell Temperature", "section": "live", "field": "sbTemp", "cfg": "cfgSB",
      "device_class": "temperature", "unit": "°C", "state_class": "measurement", "category": "diagnostic"},
-    {"key": "spaboy_input_voltage", "name": "SpaBoy Input Voltage", "section": "live", "field": "sbVin",
+    {"key": "spaboy_input_voltage", "name": "SpaBoy Input Voltage", "section": "live", "field": "sbVin", "cfg": "cfgSB",
      "divisor": 1000, "device_class": "voltage", "unit": "V", "state_class": "measurement", "category": "diagnostic"},
     {"key": "heater_outlet_temp", "name": "Heater Outlet Temperature", "section": "live", "field": "HTemp",
      "device_class": "temperature", "unit": "°F", "state_class": "measurement", "category": "diagnostic"},
@@ -155,13 +170,13 @@ SENSORS = [
 ENUM_SENSORS = [
     {"key": "filter_status", "name": "Filter Status", "section": "live", "field": "Filter",
      "map": FILTER_STATUS, "icon": "mdi:air-filter"},
-    {"key": "heater1", "name": "Heater 1", "section": "live", "field": "H1",
+    {"key": "heater1", "name": "Heater 1", "section": "live", "field": "H1", "cfg": "cfgH1",
      "map": HEATER_STATUS, "icon": "mdi:radiator", "category": "diagnostic"},
-    {"key": "heater2", "name": "Heater 2", "section": "live", "field": "H2",
+    {"key": "heater2", "name": "Heater 2", "section": "live", "field": "H2", "cfg": "cfgH2",
      "map": HEATER_STATUS, "icon": "mdi:radiator", "category": "diagnostic"},
-    {"key": "spaboy_ph_status", "name": "SpaBoy pH Status", "section": "live", "field": "sbpHind",
+    {"key": "spaboy_ph_status", "name": "SpaBoy pH Status", "section": "live", "field": "sbpHind", "cfg": "cfgSB",
      "map": {i: v for i, v in enumerate(SPABOY_COLORS)}, "icon": "mdi:ph"},
-    {"key": "spaboy_orp_status", "name": "SpaBoy ORP Status", "section": "live", "field": "sbORPind",
+    {"key": "spaboy_orp_status", "name": "SpaBoy ORP Status", "section": "live", "field": "sbORPind", "cfg": "cfgSB",
      "map": {i: v for i, v in enumerate(SPABOY_COLORS)}, "icon": "mdi:water-check"},
 ]
 
@@ -172,9 +187,10 @@ ENUM_SENSORS = [
 BINARY_SENSORS = [
     {"key": "heating", "name": "Heating", "field": "__heating__", "device_class": "heat", "icon": "mdi:radiator"},
     {"key": "filtering", "name": "Filtering", "field": "__filtering__", "icon": "mdi:air-filter"},
-    {"key": "spaboy_producing", "name": "SpaBoy Producing", "section": "live", "field": "sbProducing", "device_class": "running", "icon": "mdi:water-sync"},
-    {"key": "spaboy_connected", "name": "SpaBoy Connected", "section": "live", "field": "SBConnected", "device_class": "connectivity", "category": "diagnostic"},
-    {"key": "rfid_connected", "name": "RFID Connected", "section": "live", "field": "RFIDConnected", "device_class": "connectivity", "category": "diagnostic"},
+    {"key": "exhaust", "name": "Exhaust", "section": "live", "field": "Fan", "cfg": "cfgEx", "device_class": "running", "icon": "mdi:fan"},
+    {"key": "spaboy_producing", "name": "SpaBoy Producing", "section": "live", "field": "sbProducing", "cfg": "cfgSB", "device_class": "running", "icon": "mdi:water-sync"},
+    {"key": "spaboy_connected", "name": "SpaBoy Connected", "section": "live", "field": "SBConnected", "cfg": "cfgSB", "device_class": "connectivity", "category": "diagnostic"},
+    {"key": "rfid_connected", "name": "RFID Connected", "section": "live", "field": "RFIDConnected", "cfg": "cfgRFID", "device_class": "connectivity", "category": "diagnostic"},
     {"key": "economy", "name": "Economy Mode", "section": "live", "field": "Econ", "icon": "mdi:leaf"},
     {"key": "error", "name": "Error", "field": "__error__", "device_class": "problem", "icon": "mdi:alert"},
 ]
