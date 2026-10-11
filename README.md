@@ -34,7 +34,7 @@ a `live` section, you're good.
 - **Switches** — pumps 2–5, blowers, lights, fogger, SDS, YESS, Onzen, ozone,
   SpaBoy boost, All On. Only installed equipment is created (from `cfg*` flags).
 - **Button** — Filter Boost (one-shot timed cycle).
-- **Sensors** — water temp, **power (W)**, SpaBoy pH / ORP, filter status,
+- **Sensors** — water temp, **power (W)**, SpaBoy pH & chlorine (ORP mV), filter status,
   heater status, filtration schedule, an **error** summary (decoded fault
   names), plus diagnostics (electrode wear, cell temp, input voltage,
   heater-outlet temp).

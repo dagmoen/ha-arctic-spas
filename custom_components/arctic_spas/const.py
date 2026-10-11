@@ -145,9 +145,11 @@ def pump1_speed(value) -> str | None:
 SENSORS = [
     {"key": "water_temp", "name": "Water Temperature", "section": "live", "field": "STemp",
      "device_class": "temperature", "unit": "°F", "state_class": "measurement", "icon": "mdi:thermometer"},
-    {"key": "spaboy_ph", "name": "SpaBoy pH", "section": "live", "field": "sbpH", "cfg": "cfgSB",
+    {"key": "spaboy_ph", "name": "SpaBoy pH Level", "section": "live", "field": "sbpH", "cfg": "cfgSB",
      "divisor": 100, "state_class": "measurement", "icon": "mdi:ph"},
-    {"key": "spaboy_orp", "name": "SpaBoy ORP", "section": "live", "field": "sbORP", "cfg": "cfgSB",
+    # SpaBoy measures sanitizer strength as ORP in millivolts (not chlorine ppm);
+    # named "Chlorine Level" to match the app's framing.
+    {"key": "spaboy_orp", "name": "SpaBoy Chlorine Level", "section": "live", "field": "sbORP", "cfg": "cfgSB",
      "unit": "mV", "state_class": "measurement", "icon": "mdi:water-check"},
     {"key": "power", "name": "Power", "section": "live", "field": "Current",
      "multiplier": POWER_CALIBRATION, "round": 0, "device_class": "power", "unit": "W",
@@ -176,7 +178,7 @@ ENUM_SENSORS = [
      "map": HEATER_STATUS, "icon": "mdi:radiator", "category": "diagnostic"},
     {"key": "spaboy_ph_status", "name": "SpaBoy pH Status", "section": "live", "field": "sbpHind", "cfg": "cfgSB",
      "map": {i: v for i, v in enumerate(SPABOY_COLORS)}, "icon": "mdi:ph"},
-    {"key": "spaboy_orp_status", "name": "SpaBoy ORP Status", "section": "live", "field": "sbORPind", "cfg": "cfgSB",
+    {"key": "spaboy_orp_status", "name": "SpaBoy Chlorine Status", "section": "live", "field": "sbORPind", "cfg": "cfgSB",
      "map": {i: v for i, v in enumerate(SPABOY_COLORS)}, "icon": "mdi:water-check"},
 ]
 
