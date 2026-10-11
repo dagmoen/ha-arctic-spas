@@ -147,10 +147,10 @@ SENSORS = [
      "device_class": "temperature", "unit": "°F", "state_class": "measurement", "icon": "mdi:thermometer"},
     {"key": "spaboy_ph", "name": "SpaBoy pH Level", "section": "live", "field": "sbpH", "cfg": "cfgSB",
      "divisor": 100, "state_class": "measurement", "icon": "mdi:ph"},
-    # SpaBoy measures sanitizer strength as ORP in millivolts (not chlorine ppm);
-    # named "Chlorine Level" to match the app's framing.
+    # SpaBoy sanitizer strength (ORP). Exposed as a plain number (no unit) so a
+    # gauge with custom limits can be built on it; raw value is ORP in mV.
     {"key": "spaboy_orp", "name": "SpaBoy Chlorine Level", "section": "live", "field": "sbORP", "cfg": "cfgSB",
-     "unit": "mV", "state_class": "measurement", "icon": "mdi:water-check"},
+     "state_class": "measurement", "icon": "mdi:water-check"},
     {"key": "power", "name": "Power", "section": "live", "field": "Current",
      "multiplier": POWER_CALIBRATION, "round": 0, "device_class": "power", "unit": "W",
      "state_class": "measurement", "icon": "mdi:flash"},
